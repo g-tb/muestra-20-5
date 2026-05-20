@@ -1,0 +1,41 @@
+@page "/categories/create/"
+
+<PageTitle>Create Category</PageTitle>
+
+@using BusinessLogic
+@using BusinessLogic.Dtos
+
+@inject CategoryService CategoryService
+@inject NavigationManager NavigationManager
+
+
+<h1>Create Category</h1>
+<form>
+    <div class="form-group">
+        <label for="title">Nombre</label>
+        <input type="text" class="form-control" id="title" @bind="currentCategory.Name" />
+    </div>
+
+    <button type="button" class="btn btn-primary" @onclick="SaveChanges">Guardar cambios</button>
+
+    <a href="/categories">Cancelar</a>
+
+</form>
+
+
+
+@code {
+    private CategoryDTO? currentCategory;
+
+    protected override void OnInitialized()
+    {
+        currentCategory = new CategoryDTO();
+    }
+
+    private void SaveChanges()
+    {
+        CategoryService.AddMovie(currentCategory);
+        NavigationManager.NavigateTo("/categories");
+    }
+
+}

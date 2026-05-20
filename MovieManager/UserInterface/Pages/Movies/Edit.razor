@@ -1,0 +1,106 @@
+@page "/movies/{id:int}/edit/"
+
+<h1>Editar película</h1>
+
+@using BusinessLogic
+@using BusinessLogic.Dtos
+
+@inject CategoryService CategoryService
+@inject ActorService ActorService
+@inject MovieService MovieService
+
+@inject NavigationManager NavigationManager
+
+<form>
+    <div class="form-group">
+        <label for="title">Título</label>
+        <input type="text" class="form-control" id="title" @bind="currentMovie.Title" />
+    </div>
+    <div class="form-group">
+        <label for="director">Director</label>
+        <input type="text" class="form-control" id="director" @bind="currentMovie.Director" />
+    </div>
+    <div class="form-group">
+        <label for="releaseYear">Año de lanzamiento</label>
+        <input type="text" class="form-control" id="releaseYear" @bind="currentMovie.ReleaseYear" />
+    </div>
+    <div class="form-group">
+        <label for="Category">Category</label>
+        <select class="form-control" @onchange="OnChangeCategory" >
+            <option disable selected value="">Select Category</option>
+            @foreach (var category in categories){
+                <option value="@category.Id" selected="@(category.Id==selectedCategoryId)" >
+                    @category.Name
+                </option>
+            }
+        </select>
+    
+    </div>
+    
+    <div class="form-group">
+           <label for="actor">Select Actors</label>
+           <select data-mdb-select-init multiple class="form-control" id="actos" @onchange="OnChangeActors" >
+               @foreach (var actor in actors){
+                   <option value="@actor.Id" selected="@currentMovie.HasActor(@actor.Id)" >
+                       @actor.Name
+                   </option>
+               }
+           </select>
+    </div>
+    
+    <button type="button" class="btn btn-primary" @onclick="SaveChanges">Guardar cambios</button>
+    <a href="/movies">Cancelar</a>
+</form>
+
+
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private MovieDTO? currentMovie;
+    
+    private List<CategoryDTO>? categories;
+
+    private List<ActorDTO> actors;
+    
+    private int selectedCategoryId;
+    
+    protected override void OnInitialized(){
+
+        currentMovie = MovieService.FindById(Id);
+        categories = CategoryService.GetAll().ToList();
+        actors = ActorService.GetAll().ToList();
+        
+        if (currentMovie.Category != null){
+            selectedCategoryId = currentMovie.Category.Id;
+        }
+    }
+    
+    private void SaveChanges(){
+
+        MovieService.Update(currentMovie);
+
+        NavigationManager.NavigateTo("/movies");
+    }
+    
+    private void OnChangeCategory(ChangeEventArgs e){
+        int catId = int.Parse(e.Value.ToString());
+        currentMovie.Category = CategoryService.FindById(catId);
+    }
+    
+    public void OnChangeActors(ChangeEventArgs e){
+
+        var actorsIdsString = (string[])e.Value;
+        var actors = new List<ActorDTO>();
+        foreach (var stringId in actorsIdsString) {
+            var actor = ActorService.FindById(int.Parse(stringId));
+            actors.Add(actor);
+        }
+        currentMovie.Actors = actors;
+
+    }
+
+
+}
