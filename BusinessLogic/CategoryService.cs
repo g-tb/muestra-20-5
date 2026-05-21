@@ -6,9 +6,9 @@ namespace BusinessLogic;
 
 public class CategoryService
 {
-    private readonly CategoryMemoryRepository _repository;
+    private readonly ICategoryRepository _repository;
 
-    public CategoryService(CategoryMemoryRepository categoryRepository)
+    public CategoryService(ICategoryRepository categoryRepository)
     {
         _repository = categoryRepository;
     }

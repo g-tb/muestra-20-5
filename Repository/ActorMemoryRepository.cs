@@ -1,8 +1,9 @@
 using Domain;
+using System.Linq.Expressions;
 
 namespace Repository;
 
-public class ActorMemoryRepository
+public class ActorMemoryRepository : IActorRepository
 {
 
     private List<Actor> _actors = new List<Actor>();
@@ -15,9 +16,9 @@ public class ActorMemoryRepository
         return oneElement;
     }
 
-    public Actor? Find(Func<Actor, bool> filter)
+    public Actor? Find(Expression<Func<Actor, bool>> filter)
     {
-        return _actors.Where(filter).FirstOrDefault();
+        return _actors.AsQueryable().Where(filter).FirstOrDefault();
     }
 
     public IList<Actor> FindAll()

@@ -1,8 +1,9 @@
 using Domain;
+using System.Linq.Expressions;
 
 namespace Repository;
 
-public class MovieMemoryRepository
+public class MovieMemoryRepository : IMovieRepository
 {
 
     private List<Movie> _movies = new List<Movie>();
@@ -15,9 +16,9 @@ public class MovieMemoryRepository
         return oneElement;
     }
 
-    public Movie? Find(Func<Movie, bool> filter)
+    public Movie? Find(Expression<Func<Movie, bool>> filter)
     {
-        return _movies.Where(filter).FirstOrDefault();
+        return _movies.AsQueryable().Where(filter).FirstOrDefault();
     }
 
     public IList<Movie> FindAll()
