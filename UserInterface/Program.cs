@@ -1,23 +1,31 @@
 using BusinessLogic;
 using Domain;
+using Microsoft.EntityFrameworkCore;
 using Repository;
-using UserInterface.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddSingleton<ActorMemoryRepository>();
-builder.Services.AddSingleton<CategoryMemoryRepository>();
-builder.Services.AddSingleton<MovieMemoryRepository>();
-builder.Services.AddSingleton<MovieService>();
-builder.Services.AddSingleton<ActorService>();
-builder.Services.AddSingleton<CategoryService>();
+builder.Services.AddDbContext<MovieManagerDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MovieManager")));
+builder.Services.AddScoped<IActorRepository, ActorEfRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryEfRepository>();
+builder.Services.AddScoped<IMovieRepository, MovieEfRepository>();
+builder.Services.AddScoped<MovieService>();
+builder.Services.AddScoped<ActorService>();
+builder.Services.AddScoped<CategoryService>();
 
 
 var app = builder.Build();
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    MovieManagerDbContext dbContext = scope.ServiceProvider.GetRequiredService<MovieManagerDbContext>();
+    dbContext.Database.Migrate();
+    DbSeeder.Seed(dbContext);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

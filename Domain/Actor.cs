@@ -9,6 +9,8 @@ public class Actor
     public string? Bio { get; set; }
 
     public DateTime? BirthDate { get; set; }
+
+    public List<Movie> Movies { get; set; } = new List<Movie>();
     
     public void Update(Actor updatedActor)
     {

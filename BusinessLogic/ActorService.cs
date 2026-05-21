@@ -6,9 +6,9 @@ namespace BusinessLogic;
 
 public class ActorService
 {
-    private readonly ActorMemoryRepository _repository;
+    private readonly IActorRepository _repository;
 
-    public ActorService(ActorMemoryRepository actorRepository)
+    public ActorService(IActorRepository actorRepository)
     {
         _repository = actorRepository;
     }

@@ -1,8 +1,9 @@
 using Domain;
+using System.Linq.Expressions;
 
 namespace Repository;
 
-public class CategoryMemoryRepository
+public class CategoryMemoryRepository : ICategoryRepository
 {
 
     private List<Category> _categories = new List<Category>();
@@ -16,9 +17,9 @@ public class CategoryMemoryRepository
         return oneElement;
     }
 
-    public Category? Find(Func<Category, bool> filter)
+    public Category? Find(Expression<Func<Category, bool>> filter)
     {
-        return _categories.Where(filter).FirstOrDefault();
+        return _categories.AsQueryable().Where(filter).FirstOrDefault();
     }
 
     public IList<Category> FindAll()

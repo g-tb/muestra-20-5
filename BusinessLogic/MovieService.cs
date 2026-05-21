@@ -7,9 +7,9 @@ namespace BusinessLogic;
 
 public class MovieService
 {
-    private readonly MovieMemoryRepository _moviesRepository;
+    private readonly IMovieRepository _moviesRepository;
 
-    public MovieService(MovieMemoryRepository moviesRepository)
+    public MovieService(IMovieRepository moviesRepository)
     {
         _moviesRepository = moviesRepository;
     }

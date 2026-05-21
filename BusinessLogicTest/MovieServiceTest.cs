@@ -12,7 +12,7 @@ public class MovieServiceTest
 {
 
     private MovieService _movieService;
-    private MovieMemoryRepository _movieRepository;
+    private IMovieRepository _movieRepository;
     
     [TestInitialize]
     public void SetUp()
